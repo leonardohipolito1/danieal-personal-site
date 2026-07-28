@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Desafio Alongamento 21D — Prof. Daniel Bastos</title>
+<meta name="description" content="Protocolo diário de 15 minutos que devolve a amplitude que sua rotina tirou: pescoço, lombar, quadril e joelhos. 21 dias, guiado pelo Prof. Daniel Bastos.">
+<meta name="theme-color" content="#05080F">
+<meta property="og:title" content="Desafio Alongamento 21D — Prof. Daniel Bastos">
+<meta property="og:description" content="Não é idade. É amplitude que você parou de usar. 15 minutos por dia, 21 dias.">
+<meta property="og:type" content="website">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/instrument-sans.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:'Bricolage Grotesque';src:url(fonts/bricolage-grotesque.woff2) format('woff2');font-weight:600 800;font-style:normal;font-display:swap}
+@font-face{font-family:'Instrument Sans';src:url(fonts/instrument-sans.woff2) format('woff2');font-weight:400 600;font-style:normal;font-display:swap}
+@font-face{font-family:'IBM Plex Mono';src:url(fonts/ibm-plex-mono-400.woff2) format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'IBM Plex Mono';src:url(fonts/ibm-plex-mono-500.woff2) format('woff2');font-weight:500;font-style:normal;font-display:swap}
+
+/* ============================================================
+   DESAFIO 21D — tokens
+   ============================================================ */
+:root{
+  --ink:#05080F;
+  --deep:#0A101C;
+  --panel:#0F1828;
+  --panel-2:#132135;
+  --line:rgba(142,178,228,.15);
+  --line-strong:rgba(142,178,228,.30);
+  --blue:#1583EA;
+  --blue-hi:#5CB0FF;
+  --blue-dim:rgba(21,131,234,.14);
+  --signal:#FFB020;
+  --signal-hi:#FFC65C;
+  --bone:#E9F1FB;
+  --muted:#8CA2BF;
+  --muted-dim:#63758F;
+
+  --display:'Bricolage Grotesque',system-ui,sans-serif;
+  --body:'Instrument Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+
+  --pad:clamp(20px,5vw,40px);
+  --maxw:1180px;
+  --r:14px;
+}
+
+*{box-sizing:border-box}
+html{background:#05080F;color-scheme:dark;-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--ink);
+  color:var(--bone);
+  font-family:var(--body);
+  font-size:17px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+a{color:inherit}
+
+/* ---- shared layout ---- */
+.wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad)}
+.band{padding:clamp(72px,11vw,132px) 0;position:relative}
+.band--tight{padding:clamp(56px,8vw,88px) 0}
+.band--deep{background:var(--deep)}
+.rule{height:1px;background:var(--line);border:0;margin:0}
+
+/* ---- type ---- */
+.eyebrow{
+  font-family:var(--mono);
+  font-size:12px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--blue-hi);
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:0 0 22px;
+}
+.eyebrow::before{
+  content:"";
+  width:26px;height:1px;background:var(--blue);
+  flex:none;
+}
+.eyebrow--signal{color:var(--signal-hi)}
+.eyebrow--signal::before{background:var(--signal)}
+
+.h1{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:clamp(38px,6.4vw,74px);
+  line-height:.98;
+  letter-spacing:-.035em;
+  margin:0 0 24px;
+  text-wrap:balance;
+}
+.h2{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:clamp(30px,4.6vw,54px);
+  line-height:1.03;
+  letter-spacing:-.03em;
+  margin:0 0 20px;
+  text-wrap:balance;
+}
+.h3{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:clamp(20px,2.4vw,25px);
+  line-height:1.15;
+  letter-spacing:-.02em;
+  margin:0 0 10px;
+}
+.lede{
+  font-size:clamp(17px,2vw,20px);
+  color:var(--muted);
+  max-width:60ch;
+  margin:0 0 32px;
+  line-height:1.55;
+}
+.dim{color:var(--muted)}
+.mark{color:var(--blue-hi)}
+.strike{text-decoration:line-through;text-decoration-color:var(--muted-dim);color:var(--muted-dim)}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:60;
+  background:rgba(5,8,15,.72);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid transparent;
+  transition:border-color .3s ease,background .3s ease;
+}
+.nav.is-stuck{border-bottom-color:var(--line)}
+.nav__in{
+  max-width:var(--maxw);margin:0 auto;
+  padding:14px var(--pad);
+  display:flex;align-items:center;gap:28px;
+}
+.brand{
+  display:flex;align-items:baseline;gap:9px;
+  font-family:var(--display);font-weight:800;letter-spacing:-.03em;
+  font-size:19px;text-decoration:none;flex:none;
+}
+.brand__deg{
+  font-family:var(--mono);font-weight:400;font-size:11px;
+  color:var(--blue-hi);letter-spacing:.1em;
+}
+.nav__links{display:flex;gap:26px;margin-left:auto}
+.nav__links a{
+  font-size:14.5px;color:var(--muted);text-decoration:none;
+  transition:color .2s ease;
+}
+.nav__links a:hover{color:var(--bone)}
+.nav__cta{flex:none}
+
+/* scroll progress as a measured arc-line */
+.nav__meter{
+  position:absolute;left:0;bottom:-1px;height:2px;
+  background:linear-gradient(90deg,var(--blue),var(--blue-hi));
+  width:0%;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  font-family:var(--body);font-weight:600;font-size:16px;
+  padding:16px 28px;border-radius:999px;border:1px solid transparent;
+  text-decoration:none;cursor:pointer;
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease;
+  line-height:1;text-align:center;
+}
+.btn:focus-visible{outline:2px solid var(--blue-hi);outline-offset:3px}
+.btn--go{
+  background:var(--signal);color:#1A1200;
+  box-shadow:0 10px 30px -10px rgba(255,176,32,.6);
+}
+.btn--go:hover{background:var(--signal-hi);transform:translateY(-2px);box-shadow:0 16px 40px -12px rgba(255,176,32,.7)}
+.btn--ghost{border-color:var(--line-strong);color:var(--bone);background:transparent}
+.btn--ghost:hover{border-color:var(--blue);background:var(--blue-dim)}
+.btn--sm{padding:11px 20px;font-size:14.5px}
+.btn--lg{padding:20px 40px;font-size:18px}
+.btn--block{width:100%}
+.btn__note{
+  display:block;font-family:var(--mono);font-size:12px;color:var(--muted-dim);
+  letter-spacing:.04em;margin-top:14px;
+}
+
+/* ============================================================
+   GONIOMETER — the signature element
+   ============================================================ */
+.gonio{width:100%;height:auto;overflow:visible}
+.gonio__track{fill:none;stroke:rgba(142,178,228,.22);stroke-width:2}
+.gonio__fill{
+  fill:none;stroke:var(--blue-hi);stroke-width:4;stroke-linecap:round;
+  filter:drop-shadow(0 0 10px rgba(92,176,255,.55));
+}
+.gonio__arm{stroke:var(--blue-hi);stroke-width:2;stroke-linecap:round}
+.gonio__base{stroke:rgba(142,178,228,.35);stroke-width:2;stroke-dasharray:3 5}
+.gonio__tick{stroke:rgba(142,178,228,.30);stroke-width:1}
+.gonio__pin{fill:var(--blue-hi)}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  position:relative;
+  padding:clamp(112px,15vw,168px) 0 clamp(56px,8vw,96px);
+  overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(900px 620px at 78% 18%,rgba(21,131,234,.20),transparent 62%),
+    radial-gradient(700px 520px at 8% 88%,rgba(21,131,234,.09),transparent 66%);
+  pointer-events:none;
+}
+.hero__in{
+  position:relative;
+  display:grid;
+  grid-template-columns:1.08fr .92fr;
+  gap:clamp(32px,5vw,64px);
+  align-items:center;
+}
+.hero__thesis{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(19px,2.3vw,25px);
+  line-height:1.25;letter-spacing:-.02em;
+  color:var(--muted);
+  border-left:2px solid var(--blue);
+  padding-left:18px;
+  margin:0 0 30px;
+  max-width:38ch;
+}
+.hero__thesis b{color:var(--bone);font-weight:700}
+.hero__acts{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+
+.proof{
+  display:flex;flex-wrap:wrap;gap:10px 26px;
+  margin-top:34px;padding-top:26px;border-top:1px solid var(--line);
+}
+.proof__i{
+  display:flex;align-items:center;gap:9px;
+  font-size:14px;color:var(--muted);
+}
+.proof__i svg{flex:none;color:var(--blue-hi)}
+
+/* hero figure */
+.figure{
+  position:relative;
+  border-radius:var(--r);
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:linear-gradient(160deg,#0d1d33,#08111f);
+  aspect-ratio:500/790;
+}
+.figure__img{width:100%;height:100%;object-fit:cover;object-position:center}
+.figure__veil{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(5,8,15,.88) 4%,rgba(5,8,15,.12) 45%,transparent 72%);
+}
+.figure__gonio{
+  position:absolute;left:-6%;bottom:6%;width:62%;
+  opacity:.95;
+}
+.figure__read{
+  position:absolute;right:18px;top:18px;
+  font-family:var(--mono);font-size:12px;letter-spacing:.1em;
+  color:var(--blue-hi);
+  background:rgba(5,8,15,.6);
+  border:1px solid var(--line-strong);
+  border-radius:999px;padding:7px 13px;
+  backdrop-filter:blur(6px);
+}
+.figure__cap{
+  position:absolute;left:0;right:0;bottom:0;
+  padding:18px 20px;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);
+}
+
+/* ============================================================
+   PAIN MAP
+   ============================================================ */
+.pain{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.pain__i{background:var(--deep);padding:26px 22px 24px;transition:background .25s ease}
+.pain__i:hover{background:var(--panel)}
+.pain__deg{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--muted-dim);display:block;margin-bottom:14px}
+.pain__t{font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:-.02em;margin:0 0 6px}
+.pain__d{font-size:14.5px;color:var(--muted);margin:0;line-height:1.5}
+
+/* ============================================================
+   BEFORE / AFTER
+   ============================================================ */
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2.4vw,26px);margin-top:44px}
+.ba__card{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:#0b1626}
+.ba__card--now{border-color:rgba(92,176,255,.4)}
+.ba__img{width:100%;aspect-ratio:500/790;object-fit:cover}
+.ba__veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,8,15,.9),rgba(5,8,15,.05) 48%,transparent)}
+.ba__tag{
+  position:absolute;left:14px;top:14px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  padding:6px 12px;border-radius:999px;
+  background:rgba(5,8,15,.65);border:1px solid var(--line-strong);color:var(--muted);
+  backdrop-filter:blur(6px);
+}
+.ba__card--now .ba__tag{color:#0A1220;background:var(--blue-hi);border-color:transparent;font-weight:500}
+.ba__foot{position:absolute;left:0;right:0;bottom:0;padding:20px 18px}
+.ba__deg{
+  font-family:var(--mono);font-size:clamp(26px,4vw,38px);line-height:1;
+  color:var(--bone);display:block;letter-spacing:-.02em;
+}
+.ba__card--now .ba__deg{color:var(--blue-hi)}
+.ba__lbl{font-size:13.5px;color:var(--muted);display:block;margin-top:6px}
+.ba__note{
+  font-family:var(--mono);font-size:11.5px;color:var(--muted-dim);
+  letter-spacing:.05em;margin:20px 0 0;line-height:1.6;
+}
+
+/* ============================================================
+   BENEFITS
+   ============================================================ */
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:clamp(14px,2vw,20px)}
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  padding:30px 26px 28px;
+  transition:border-color .25s ease,transform .25s ease,background .25s ease;
+}
+.card:hover{border-color:var(--line-strong);transform:translateY(-3px);background:var(--panel-2)}
+.card__gonio{width:52px;height:auto;margin-bottom:20px;display:block}
+.card__t{font-family:var(--display);font-weight:700;font-size:19px;letter-spacing:-.02em;margin:0 0 8px}
+.card__d{font-size:15px;color:var(--muted);margin:0;line-height:1.55}
+
+/* ============================================================
+   PROTOCOL / PHASES
+   ============================================================ */
+.phases{display:grid;gap:1px;background:var(--line);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:48px}
+.phase{
+  background:var(--ink);
+  display:grid;
+  grid-template-columns:132px 1fr 300px;
+  gap:clamp(18px,3vw,44px);
+  align-items:start;
+  padding:36px 4px;
+  transition:background .3s ease;
+}
+.phase:hover{background:var(--deep)}
+.phase__meter{position:relative}
+.phase__gonio{width:100%;height:auto}
+.phase__range{
+  font-family:var(--mono);font-size:12px;letter-spacing:.1em;
+  color:var(--blue-hi);text-align:center;display:block;margin-top:8px;
+}
+.phase__week{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted-dim);margin:0 0 10px;
+}
+.phase__body{font-size:15.5px;color:var(--muted);margin:0;line-height:1.6}
+.phase__list{list-style:none;padding:0;margin:0;display:grid;gap:9px}
+.phase__list li{
+  font-size:14.5px;color:var(--muted);
+  padding-left:20px;position:relative;line-height:1.5;
+}
+.phase__list li::before{
+  content:"";position:absolute;left:0;top:.55em;
+  width:7px;height:7px;border-radius:50%;
+  border:1.5px solid var(--blue);
+}
+
+/* ============================================================
+   PROFESSOR
+   ============================================================ */
+.prof{display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(28px,5vw,60px);align-items:center}
+.portrait{
+  position:relative;margin:0;
+  aspect-ratio:3/4;border-radius:var(--r);overflow:hidden;
+  border:1px solid var(--line);
+  background:linear-gradient(160deg,#0d1d33,#08111f);
+}
+.portrait__img{width:100%;height:100%;object-fit:cover;object-position:50% 18%}
+.portrait__veil{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(5,8,15,.88) 3%,rgba(5,8,15,.08) 44%,transparent 70%);
+}
+.portrait__cap{
+  position:absolute;left:0;right:0;bottom:0;padding:18px 20px;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);
+}
+.creds{list-style:none;padding:0;margin:26px 0 0;display:grid;gap:14px}
+.creds li{display:flex;gap:14px;align-items:flex-start;font-size:15.5px;color:var(--muted);line-height:1.5}
+.creds svg{flex:none;margin-top:3px;color:var(--blue-hi)}
+
+/* ============================================================
+   TESTIMONIALS
+   ============================================================ */
+.quote{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--r);padding:30px 26px;
+  display:flex;flex-direction:column;gap:20px;
+}
+.quote__mark{font-family:var(--display);font-size:44px;line-height:.6;color:var(--blue);font-weight:800}
+.quote__txt{font-size:16.5px;line-height:1.55;margin:0;color:var(--bone)}
+.quote__who{display:flex;align-items:center;gap:13px;margin-top:auto;padding-top:6px}
+.quote__av{width:40px;height:40px;border-radius:50%;border:1px solid var(--line-strong);flex:none;display:grid;place-items:center;font-family:var(--mono);font-size:13px;letter-spacing:.04em;color:var(--blue-hi);background:var(--blue-dim)}
+.quote__n{font-weight:600;font-size:15px;display:block}
+.quote__r{font-size:13px;color:var(--muted-dim);display:block}
+
+/* ============================================================
+   OFFER
+   ============================================================ */
+.offer{
+  max-width:620px;margin:44px auto 0;
+  background:linear-gradient(170deg,var(--panel-2),var(--panel));
+  border:1px solid var(--line-strong);
+  border-radius:20px;
+  padding:clamp(28px,4vw,44px);
+  position:relative;
+  box-shadow:0 40px 90px -50px rgba(21,131,234,.6);
+}
+.offer__ribbon{
+  position:absolute;top:-13px;left:50%;transform:translateX(-50%);
+  background:var(--signal);color:#1A1200;
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  padding:6px 16px;border-radius:999px;white-space:nowrap;font-weight:500;
+}
+.offer__name{font-family:var(--display);font-weight:800;font-size:clamp(24px,3.4vw,32px);letter-spacing:-.03em;margin:8px 0 4px;text-align:center}
+.offer__sub{text-align:center;color:var(--muted);font-size:15px;margin:0 0 28px}
+.incl{list-style:none;padding:0;margin:0 0 30px;display:grid;gap:12px}
+.incl li{display:flex;gap:12px;align-items:flex-start;font-size:15.5px;line-height:1.5}
+.incl svg{flex:none;margin-top:4px;color:var(--blue-hi)}
+.incl b{font-weight:600}
+.incl span{color:var(--muted)}
+.price{
+  text-align:center;padding:24px 0;margin-bottom:24px;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+}
+.price__from{font-size:14px;color:var(--muted-dim);margin:0 0 6px}
+.price__main{
+  font-family:var(--display);font-weight:800;letter-spacing:-.04em;
+  font-size:clamp(40px,7vw,60px);line-height:1;margin:0;
+}
+.price__main sup{font-size:.42em;font-weight:700;vertical-align:super;margin-right:4px;letter-spacing:0}
+.price__cash{font-family:var(--mono);font-size:13.5px;color:var(--muted);margin:12px 0 0;letter-spacing:.03em}
+
+.edit{
+  display:inline-block;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.12em;color:var(--signal);
+  border:1px dashed rgba(255,176,32,.45);border-radius:5px;
+  padding:1px 6px;margin-left:7px;vertical-align:middle;
+  text-transform:uppercase;white-space:nowrap;
+}
+
+/* guarantee */
+.guar{
+  display:grid;grid-template-columns:auto 1fr;gap:clamp(20px,3vw,34px);
+  align-items:center;
+  background:var(--deep);border:1px solid var(--line);
+  border-radius:var(--r);padding:clamp(26px,4vw,38px);
+  max-width:820px;margin:0 auto;
+}
+.guar__seal{
+  width:104px;height:104px;border-radius:50%;flex:none;
+  border:1px solid rgba(255,176,32,.35);
+  background:radial-gradient(circle at 50% 40%,rgba(255,176,32,.16),transparent 70%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:var(--display);font-weight:800;line-height:1;
+}
+.guar__num{font-size:34px;color:var(--signal);letter-spacing:-.03em}
+.guar__unit{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--signal);font-weight:400;margin-top:5px;text-transform:uppercase}
+.guar__t{font-family:var(--display);font-weight:700;font-size:21px;letter-spacing:-.02em;margin:0 0 8px}
+.guar__d{font-size:15.5px;color:var(--muted);margin:0;line-height:1.55}
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+.faq{max-width:800px;margin:40px auto 0;border-top:1px solid var(--line)}
+.faq__i{border-bottom:1px solid var(--line)}
+.faq__q{
+  width:100%;background:none;border:0;cursor:pointer;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:20px;
+  padding:24px 4px;text-align:left;
+  font-family:var(--display);font-weight:700;font-size:clamp(16.5px,2vw,19px);
+  letter-spacing:-.015em;color:var(--bone);line-height:1.3;
+}
+.faq__q:hover{color:var(--blue-hi)}
+.faq__q:focus-visible{outline:2px solid var(--blue-hi);outline-offset:-2px}
+.faq__sign{flex:none;width:18px;height:18px;margin-top:3px;position:relative}
+.faq__sign::before,.faq__sign::after{
+  content:"";position:absolute;background:var(--blue-hi);
+  left:50%;top:50%;transform:translate(-50%,-50%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+.faq__sign::before{width:100%;height:1.5px}
+.faq__sign::after{width:1.5px;height:100%}
+.faq__i.is-open .faq__sign::after{transform:translate(-50%,-50%) scaleY(0)}
+.faq__a{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1)}
+.faq__a p{margin:0 0 24px;padding-right:38px;color:var(--muted);font-size:15.5px;line-height:1.6}
+
+/* ============================================================
+   FINAL CTA + FOOTER
+   ============================================================ */
+.final{
+  position:relative;text-align:center;overflow:hidden;
+  padding:clamp(80px,12vw,140px) 0;
+}
+.final::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(760px 460px at 50% 120%,rgba(21,131,234,.28),transparent 70%);
+  pointer-events:none;
+}
+.final__in{position:relative}
+.final .h2{margin-left:auto;margin-right:auto;max-width:16ch}
+.final .lede{margin-left:auto;margin-right:auto;text-align:center}
+
+.foot{border-top:1px solid var(--line);padding:38px 0 100px;background:var(--deep)}
+.foot__in{display:flex;flex-wrap:wrap;gap:16px 30px;align-items:center;justify-content:space-between}
+.foot__c{font-size:13.5px;color:var(--muted-dim);margin:0}
+.foot__links{display:flex;gap:22px}
+.foot__links a{font-size:13.5px;color:var(--muted-dim);text-decoration:none}
+.foot__links a:hover{color:var(--bone)}
+.foot__legal{font-size:12.5px;color:var(--muted-dim);opacity:.75;margin:22px 0 0;max-width:78ch;line-height:1.6}
+
+/* sticky mobile bar */
+.dock{
+  position:fixed;left:0;right:0;bottom:0;z-index:70;
+  padding:12px var(--pad) calc(12px + env(safe-area-inset-bottom));
+  background:rgba(5,8,15,.9);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);
+  display:none;
+  transform:translateY(110%);
+  transition:transform .3s ease;
+}
+.dock.is-up{transform:translateY(0)}
+
+/* ============================================================
+   MOTION
+   ============================================================ */
+.rise{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+.rise.is-in{opacity:1;transform:none}
+.rise[data-d="1"]{transition-delay:.08s}
+.rise[data-d="2"]{transition-delay:.16s}
+.rise[data-d="3"]{transition-delay:.24s}
+.rise[data-d="4"]{transition-delay:.32s}
+
+/* hero load sequence */
+.load{opacity:0;transform:translateY(16px);animation:enter .85s cubic-bezier(.22,1,.36,1) forwards}
+.load[data-d="1"]{animation-delay:.10s}
+.load[data-d="2"]{animation-delay:.20s}
+.load[data-d="3"]{animation-delay:.30s}
+.load[data-d="4"]{animation-delay:.40s}
+.load[data-d="5"]{animation-delay:.50s}
+@keyframes enter{to{opacity:1;transform:none}}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:1000px){
+  .hero__in{grid-template-columns:1fr;gap:44px}
+  .hero__fig{max-width:440px;margin:0 auto;width:100%}
+  .phase{grid-template-columns:104px 1fr;gap:24px}
+  .phase__list{grid-column:1/-1;padding-left:128px}
+  .prof{grid-template-columns:1fr;gap:34px}
+  .portrait{max-width:360px;margin-left:auto;margin-right:auto}
+}
+@media (max-width:820px){
+  .nav__links{display:none}
+  .nav__cta{margin-left:auto}
+  .dock{display:block}
+  .foot{padding-bottom:110px}
+}
+@media (max-width:620px){
+  body{font-size:16.5px}
+  .phase{grid-template-columns:84px 1fr;padding:28px 4px}
+  .phase__list{padding-left:0;margin-top:4px}
+  .guar{grid-template-columns:1fr;text-align:center;justify-items:center}
+  .ba{grid-template-columns:1fr 1fr;gap:10px}
+  .ba__foot{padding:14px 12px}
+  .figure__gonio{width:70%;left:-10%}
+  .hero__acts .btn{width:100%}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .load,.rise{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ========================= NAV ========================= -->
+<header class="nav" id="nav">
+  <div class="nav__in">
+    <a class="brand" href="#topo">21D<span class="brand__deg">ALONGAMENTO</span></a>
+    <nav class="nav__links">
+      <a href="#amplitude">Amplitude</a>
+      <a href="#protocolo">Protocolo</a>
+      <a href="#professor">Professor</a>
+      <a href="#investir">Investir</a>
+    </nav>
+    <a class="btn btn--go btn--sm nav__cta" href="https://pay.hotmart.com/G106599845O?off=5l9x9gnn&amp;hotfeature=51">Começar agora</a>
+  </div>
+  <div class="nav__meter" id="meter"></div>
+</header>
+
+<main id="topo">
+
+<!-- ========================= HERO ========================= -->
+<section class="hero">
+  <div class="wrap hero__in">
+    <div class="hero__copy">
+      <p class="eyebrow load" data-d="1">Desafio Alongamento 21D · Prof. Daniel Bastos</p>
+
+      <h1 class="h1 load" data-d="2">Você acorda travado<br>e acha que é idade.</h1>
+
+      <p class="hero__thesis load" data-d="3">Não é idade. É <b>amplitude</b> — a que seu corpo tem, mas você parou de usar.</p>
+
+      <p class="lede load" data-d="3">Quinze minutos por dia, vinte e um dias. Um protocolo diário guiado que devolve movimento ao pescoço, à lombar, ao quadril e aos joelhos — sem academia, sem equipamento, na sala da sua casa.</p>
+
+      <div class="hero__acts load" data-d="4">
+        <a class="btn btn--go btn--lg" href="https://pay.hotmart.com/G106599845O?off=5l9x9gnn&amp;hotfeature=51">Entrar no Desafio 21D</a>
+        <a class="btn btn--ghost btn--lg" href="#amplitude">Ver o que muda</a>
+      </div>
+
+      <div class="proof load" data-d="5">
+        <span class="proof__i"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1v14M1 8h14"/></svg>15 min por dia</span>
+        <span class="proof__i"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1.5" y="2.5" width="13" height="12" rx="2"/><path d="M1.5 6h13M5 1v3M11 1v3"/></svg>Acesso imediato</span>
+        <span class="proof__i"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1.5l5.5 2.3v4c0 3.3-2.3 5.6-5.5 6.7C4.8 13.4 2.5 11.1 2.5 7.8v-4L8 1.5z"/></svg>Garantia de <span class="edit">editar</span> dias</span>
+      </div>
+    </div>
+
+    <div class="hero__fig">
+      <figure class="figure">
+        <img class="figure__img" src="assets/depois.jpg" alt="Prof. Daniel Bastos em flexão completa de tronco, mãos apoiadas no chão" width="500" height="790" fetchpriority="high">
+        <span class="figure__veil"></span>
+        <span class="figure__read" id="read">0°</span>
+        <svg class="figure__gonio" id="heroGonio" viewBox="0 0 300 190" aria-hidden="true">
+          <line class="gonio__base" x1="150" y1="150" x2="284" y2="150"/>
+          <circle class="gonio__track" cx="150" cy="150" r="120" transform="rotate(180 150 150)" stroke-dasharray="376.99 753.98"/>
+          <circle class="gonio__fill" id="heroFill" cx="150" cy="150" r="120" transform="rotate(180 150 150)" stroke-dasharray="0 753.98"/>
+          <line class="gonio__arm" id="heroArm" x1="150" y1="150" x2="30" y2="150"/>
+          <line class="gonio__tick" x1="150" y1="150" x2="30" y2="150"/>
+          <circle class="gonio__pin" cx="150" cy="150" r="4"/>
+        </svg>
+        <figcaption class="figure__cap">Flexão de tronco · amplitude alvo</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= PAIN MAP ========================= -->
+<section class="band band--tight band--deep">
+  <div class="wrap">
+    <p class="eyebrow rise">Onde a rigidez cobra a conta</p>
+    <h2 class="h2 rise" data-d="1" style="max-width:20ch">Toda dor crônica começa como uma amplitude que sumiu.</h2>
+    <div class="pain rise" data-d="2">
+      <div class="pain__i">
+        <span class="pain__deg">CERVICAL</span>
+        <h3 class="pain__t">Pescoço travado</h3>
+        <p class="pain__d">Olhar por cima do ombro vira manobra. Dor de cabeça no fim do expediente.</p>
+      </div>
+      <div class="pain__i">
+        <span class="pain__deg">LOMBAR</span>
+        <h3 class="pain__t">Costas que ardem</h3>
+        <p class="pain__d">Levantar da cadeira exige apoio. Sentar por uma hora já incomoda.</p>
+      </div>
+      <div class="pain__i">
+        <span class="pain__deg">QUADRIL</span>
+        <h3 class="pain__t">Quadril fechado</h3>
+        <p class="pain__d">Agachar para calçar o sapato ficou desconfortável. Passada curta ao andar.</p>
+      </div>
+      <div class="pain__i">
+        <span class="pain__deg">JOELHO</span>
+        <h3 class="pain__t">Joelho que estala</h3>
+        <p class="pain__d">Descer escada dá insegurança. A perna não estica por completo.</p>
+      </div>
+      <div class="pain__i">
+        <span class="pain__deg">POSTURA</span>
+        <h3 class="pain__t">Ombro enrolado</h3>
+        <p class="pain__d">O corpo se fecha para frente. A foto denuncia antes do espelho.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= BEFORE / AFTER ========================= -->
+<section class="band" id="amplitude">
+  <div class="wrap">
+    <p class="eyebrow rise">A mesma pessoa, o mesmo teste</p>
+    <h2 class="h2 rise" data-d="1" style="max-width:18ch">Amplitude não se sente. Se mede.</h2>
+    <p class="lede rise" data-d="1">O teste de flexão de tronco é o mais honesto que existe: você fica de pé, desce, e o chão diz a verdade. É por isso que o 21D começa e termina com ele — para você ver o número mudar, não só imaginar.</p>
+
+    <div class="ba rise" data-d="2">
+      <figure class="ba__card">
+        <img class="ba__img" src="assets/antes.jpg" alt="Flexão de tronco antes do protocolo: mãos alcançam os joelhos" width="500" height="790" loading="lazy">
+        <span class="ba__veil"></span>
+        <span class="ba__tag">Dia 1</span>
+        <figcaption class="ba__foot">
+          <span class="ba__deg">58°</span>
+          <span class="ba__lbl">Mãos param no joelho</span>
+        </figcaption>
+      </figure>
+      <figure class="ba__card ba__card--now">
+        <img class="ba__img" src="assets/depois.jpg" alt="Flexão de tronco depois do protocolo: mãos apoiadas no chão" width="500" height="790" loading="lazy">
+        <span class="ba__veil"></span>
+        <span class="ba__tag">Dia 21</span>
+        <figcaption class="ba__foot">
+          <span class="ba__deg">104°</span>
+          <span class="ba__lbl">Palmas no chão</span>
+        </figcaption>
+      </figure>
+    </div>
+    <p class="ba__note">Registro do Prof. Daniel Bastos. Os graus indicam a inclinação do tronco medida nas fotos e servem de referência visual — resultados variam conforme histórico, frequência e condição de cada pessoa.</p>
+  </div>
+</section>
+
+<!-- ========================= BENEFITS ========================= -->
+<section class="band band--deep">
+  <div class="wrap">
+    <p class="eyebrow rise">O que volta em 21 dias</p>
+    <h2 class="h2 rise" data-d="1" style="max-width:17ch">Quatro coisas mudam, e você percebe fora do tapete.</h2>
+
+    <div class="grid3 rise" data-d="2" style="margin-top:44px">
+      <article class="card">
+        <svg class="card__gonio" viewBox="0 0 300 190" aria-hidden="true"><line class="gonio__base" x1="150" y1="150" x2="284" y2="150"/><circle class="gonio__track" cx="150" cy="150" r="120" transform="rotate(180 150 150)" stroke-dasharray="376.99 753.98"/><circle class="gonio__fill" cx="150" cy="150" r="120" transform="rotate(180 150 150)" stroke-dasharray="314 753.98"/><circle class="gonio__pin" cx="150" cy="150" r="5"/></svg>
+        <h3 class="card__t">Você alcança de novo</h3>
+        <p class="card__d">Amarrar o tênis sentado no chão, pegar algo na prateleira de cima, olhar para trás ao dar ré. Amplitude é isso, no dia comum.</p>
+      </article>
+      <article class="card">
+        <svg class="card__gonio" viewBox="0 0 300 190" aria-hidden="true"><line class="gonio__base" x1="150" y1="150" x2="284" y2="150"/><circle class="gonio__track" cx="150" cy="150" r="120" transform="rotate(180 150 150)" stroke-dasharray="376.99 753.98"/><circle class="gonio__fill" cx="150" cy="150" r="120" transform="rotate(180 150 150)" stroke-dasharray="240 753.98"/><circle class="gonio__pin" cx="150" cy="150" r="5"/></svg>
+        <h3 class="card__t">A dor perde espaço</h3>
+        <p class="card__d">Músculo encurtado puxa articulação e gera dor de repetição. Devolver comprimento tira a tração — e o incômodo diminui junto.</p>
+      </article>
+      <article class="card">
+        <svg class="card__gonio" viewBox="0 0 300 190" aria-hidden="true"><line class="gonio__base" x1="150" y1="150" x2="284" y2="150"/><circle class="gonio__track" cx="150" cy="150" r="120" transform="rotate(180 150 150)" stroke-dasharray="376.99 753.98"/><circle class="gonio__fill" cx="150" cy="150" r="120" transform="rotate(180 150 150)" stroke-dasharray="350 753.98"/><circle class="gonio__pin" cx="150" cy="150" r="5"/></svg>
+        <h3 class="card__t">A postura se abre</h3>
+        <p class="card__d">Peitoral e flexores de quadril soltos param de enrolar o tronco para frente. Você fica mais alto sem fazer força para isso.</p>
+      </article>
+      <article class="card">
+        <svg class="card__gonio" viewBox="0 0 300 190" aria-hidden="true"><line class="gonio__base" x1="150" y1="150" x2="284" y2="150"/><circle class="gonio__track" cx="150" cy="150" r="120" transform="rotate(180 150 150)" stroke-dasharray="376.99 753.98"/><circle class="gonio__fill" cx="150" cy="150" r="120" transform="rotate(180 150 150)" stroke-dasharray="285 753.98"/><circle class="gonio__pin" cx="150" cy="150" r="5"/></svg>
+        <h3 class="card__t">O corpo desliga à noite</h3>
+        <p class="card__d">A sessão termina em respiração e alongamento lento. É o sinal que o sistema nervoso esperava para baixar a rotação.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= PROTOCOL ========================= -->
+<section class="band" id="protocolo">
+  <div class="wrap">
+    <p class="eyebrow rise">Como os 21 dias são construídos</p>
+    <h2 class="h2 rise" data-d="1" style="max-width:19ch">Três semanas, três amplitudes, uma progressão.</h2>
+    <p class="lede rise" data-d="1">Ganho de amplitude não é linear e não vem de esforço. Vem de dose repetida na ordem certa. Cada semana abre uma faixa nova e só avança quando a anterior está confortável.</p>
+
+    <div class="phases">
+      <article class="phase rise">
+        <div class="phase__meter">
+          <svg class="phase__gonio" viewBox="0 0 300 190" aria-hidden="true"><line class="gonio__base" x1="150" y1="150" x2="284" y2="150"/><circle class="gonio__track" cx="150" cy="150" r="120" transform="rotate(180 150 150)" stroke-dasharray="376.99 753.98"/><circle class="gonio__fill" cx="150" cy="150" r="120" transform="rotate(180 150 150)" stroke-dasharray="125 753.98"/><circle class="gonio__pin" cx="150" cy="150" r="5"/></svg>
+          <span class="phase__range">0° — 60°</span>
+        </div>
+        <div>
+          <p class="phase__week">Semana 1 · Destravar</p>
+          <h3 class="h3">O corpo reaprende onde ele ainda vai</h3>
+          <p class="phase__body">Sessões curtas e generosas, sem alongamento forçado. O objetivo é tirar a proteção que o corpo criou em volta das articulações paradas e estabelecer o hábito diário.</p>
+        </div>
+        <ul class="phase__list">
+          <li>Teste inicial de flexão de tronco</li>
+          <li>Mobilidade de cervical e ombros</li>
+          <li>Respiração diafragmática guiada</li>
+          <li>12 a 15 minutos por sessão</li>
+        </ul>
+      </article>
+
+      <article class="phase rise">
+        <div class="phase__meter">
+          <svg class="phase__gonio" viewBox="0 0 300 190" aria-hidden="true"><line class="gonio__base" x1="150" y1="150" x2="284" y2="150"/><circle class="gonio__track" cx="150" cy="150" r="120" transform="rotate(180 150 150)" stroke-dasharray="376.99 753.98"/><circle class="gonio__fill" cx="150" cy="150" r="120" transform="rotate(180 150 150)" stroke-dasharray="251 753.98"/><circle class="gonio__pin" cx="150" cy="150" r="5"/></svg>
+          <span class="phase__range">60° — 120°</span>
+        </div>
+        <div>
+          <p class="phase__week">Semana 2 · Abrir</p>
+          <h3 class="h3">A cadeia posterior entra em jogo</h3>
+          <p class="phase__body">Posterior de coxa, panturrilha, lombar e flexores de quadril — a corrente que mais encurta em quem passa o dia sentado. É aqui que a maioria sente a virada.</p>
+        </div>
+        <ul class="phase__list">
+          <li>Cadeia posterior completa</li>
+          <li>Abertura de quadril e adutores</li>
+          <li>Tempo de sustentação progressivo</li>
+          <li>15 a 18 minutos por sessão</li>
+        </ul>
+      </article>
+
+      <article class="phase rise">
+        <div class="phase__meter">
+          <svg class="phase__gonio" viewBox="0 0 300 190" aria-hidden="true"><line class="gonio__base" x1="150" y1="150" x2="284" y2="150"/><circle class="gonio__track" cx="150" cy="150" r="120" transform="rotate(180 150 150)" stroke-dasharray="376.99 753.98"/><circle class="gonio__fill" cx="150" cy="150" r="120" transform="rotate(180 150 150)" stroke-dasharray="376.99 753.98"/><circle class="gonio__pin" cx="150" cy="150" r="5"/></svg>
+          <span class="phase__range">120° — 180°</span>
+        </div>
+        <div>
+          <p class="phase__week">Semana 3 · Sustentar</p>
+          <h3 class="h3">Amplitude vira movimento que fica</h3>
+          <p class="phase__body">Ganho que não é usado volta atrás. A última semana integra tudo em sequências fluidas e te entrega uma rotina curta de manutenção para seguir depois do dia 21.</p>
+        </div>
+        <ul class="phase__list">
+          <li>Sequências integradas de corpo inteiro</li>
+          <li>Reteste e comparação com o dia 1</li>
+          <li>Rotina de manutenção de 7 minutos</li>
+          <li>18 a 20 minutos por sessão</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= PROFESSOR ========================= -->
+<section class="band band--deep" id="professor">
+  <div class="wrap prof">
+    <figure class="portrait rise">
+      <img class="portrait__img" src="assets/daniel.jpg" alt="Prof. Daniel Bastos, professor de Educação Física" width="900" height="1200" loading="lazy">
+      <span class="portrait__veil"></span>
+      <figcaption class="portrait__cap">Prof. Daniel Bastos · Educação Física</figcaption>
+    </figure>
+    <div>
+      <p class="eyebrow rise">Quem conduz</p>
+      <h2 class="h2 rise" data-d="1">Prof. Daniel Bastos</h2>
+      <p class="lede rise" data-d="1" style="margin-bottom:0">Professor de Educação Física há mais de dez anos, Daniel montou o 21D depois de repetir a mesma conversa centenas de vezes no atendimento: gente que não queria virar atleta, queria só voltar a se abaixar sem pensar. O protocolo é a resposta curta para esse pedido.</p>
+      <ul class="creds rise" data-d="2">
+        <li><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8.5l4 4 8-9"/></svg>Mais de 10 anos como Professor de Educação Física</li>
+        <li><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8.5l4 4 8-9"/></svg>Metodologia própria, testada em atendimento presencial antes de virar programa</li>
+        <li><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8.5l4 4 8-9"/></svg>Foco em quem passa o dia sentado, não em quem já treina</li>
+        <li><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8.5l4 4 8-9"/></svg>Centenas de alunos guiados no desafio <span class="edit">confirmar nº</span></li>
+      </ul>
+      <div class="rise" data-d="3" style="margin-top:34px">
+        <a class="btn btn--ghost" href="https://pay.hotmart.com/G106599845O?off=5l9x9gnn&amp;hotfeature=51">Começar com o Prof. Daniel</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= TESTIMONIALS ========================= -->
+<section class="band">
+  <div class="wrap">
+    <p class="eyebrow rise">Quem já fez os 21 dias</p>
+    <h2 class="h2 rise" data-d="1" style="max-width:16ch">O relato muda antes do espelho.</h2>
+    <div class="grid3 rise" data-d="2" style="margin-top:44px">
+      <blockquote class="quote">
+        <span class="quote__mark">“</span>
+        <p class="quote__txt">As dores nas minhas costas sumiram. Em 21 dias sinto meu corpo mais leve e flexível. O Professor Daniel é incrível.</p>
+        <footer class="quote__who">
+          <span class="quote__av" aria-hidden="true">AS</span>
+          <span><span class="quote__n">Ana Silva</span><span class="quote__r">Designer gráfica</span></span>
+        </footer>
+      </blockquote>
+      <blockquote class="quote">
+        <span class="quote__mark">“</span>
+        <p class="quote__txt">Eu não conseguia tocar os pés, e agora sinto uma melhora absurda nos meus joelhos. Super recomendo o desafio.</p>
+        <footer class="quote__who">
+          <span class="quote__av" aria-hidden="true">CM</span>
+          <span><span class="quote__n">Carlos Mendes</span><span class="quote__r">Engenheiro civil</span></span>
+        </footer>
+      </blockquote>
+      <blockquote class="quote">
+        <span class="quote__mark">“</span>
+        <p class="quote__txt">Minha postura melhorou muito e minhas dores no pescoço diminuíram. Esse desafio realmente mudou minha vida.</p>
+        <footer class="quote__who">
+          <span class="quote__av" aria-hidden="true">SP</span>
+          <span><span class="quote__n">Sofia Pereira</span><span class="quote__r">Professora</span></span>
+        </footer>
+      </blockquote>
+    </div>
+    <p class="ba__note" style="text-align:center">Depoimentos de alunos do desafio <span class="edit">adicionar fotos reais dos alunos</span></p>
+  </div>
+</section>
+
+<!-- ========================= OFFER ========================= -->
+<section class="band band--deep" id="investir">
+  <div class="wrap" style="text-align:center">
+    <p class="eyebrow rise" style="justify-content:center">O que você leva</p>
+    <h2 class="h2 rise" data-d="1" style="max-width:20ch;margin-left:auto;margin-right:auto">Um protocolo completo, pelo preço de uma aula avulsa.</h2>
+  </div>
+
+  <div class="wrap">
+    <div class="offer rise" data-d="2">
+      <span class="offer__ribbon">Turma aberta · vagas limitadas</span>
+      <h3 class="offer__name">Desafio Alongamento 21D</h3>
+      <p class="offer__sub">Acesso imediato, no celular, tablet ou computador.</p>
+
+      <ul class="incl">
+        <li><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8.5l4 4 8-9"/></svg><span><b>21 sessões guiadas em vídeo</b> — uma para cada dia, de 12 a 20 minutos.</span></li>
+        <li><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8.5l4 4 8-9"/></svg><span><b>Teste de amplitude do dia 1 e do dia 21</b> — para você medir, não adivinhar.</span></li>
+        <li><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8.5l4 4 8-9"/></svg><span><b>Rotina de manutenção de 7 minutos</b> — o que fazer depois que o desafio acaba.</span></li>
+        <li><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8.5l4 4 8-9"/></svg><span><b>Guia de dor por região</b> — pescoço, lombar, quadril e joelho. <span class="edit">confirmar bônus</span></span></li>
+        <li><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8.5l4 4 8-9"/></svg><span><b>Acesso por <span class="edit">período</span></b> — sem mensalidade, sem renovação automática.</span></li>
+      </ul>
+
+      <div class="price">
+        <p class="price__from">De <span class="strike">R$ <span class="edit">valor cheio</span></span> por</p>
+        <p class="price__main"><sup>12x</sup>R$ <span class="edit">valor</span></p>
+        <p class="price__cash">ou R$ <span class="edit">à vista</span> no Pix · Cartão, Pix ou boleto</p>
+      </div>
+
+      <a class="btn btn--go btn--lg btn--block" href="https://pay.hotmart.com/G106599845O?off=5l9x9gnn&amp;hotfeature=51">Quero entrar no Desafio 21D</a>
+      <span class="btn__note">Pagamento seguro via Hotmart · acesso liberado na hora</span>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= GUARANTEE ========================= -->
+<section class="band band--tight">
+  <div class="wrap">
+    <div class="guar rise">
+      <div class="guar__seal">
+        <span class="guar__num"><span class="edit" style="margin:0">nº</span></span>
+        <span class="guar__unit">dias</span>
+      </div>
+      <div>
+        <h3 class="guar__t">Teste sem risco</h3>
+        <p class="guar__d">Entre, faça as primeiras sessões e veja como seu corpo responde. Se não for para você, peça o reembolso dentro do prazo pela própria Hotmart e receba 100% de volta — sem formulário, sem justificativa, sem conversa de retenção. <span class="edit">definir prazo</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= FAQ ========================= -->
+<section class="band band--deep">
+  <div class="wrap" style="text-align:center">
+    <p class="eyebrow rise" style="justify-content:center">Antes de entrar</p>
+    <h2 class="h2 rise" data-d="1">Perguntas honestas</h2>
+  </div>
+  <div class="wrap">
+    <div class="faq rise" data-d="2">
+
+      <div class="faq__i">
+        <button class="faq__q" type="button" aria-expanded="false">Nunca me alonguei na vida. Consigo acompanhar?<span class="faq__sign"></span></button>
+        <div class="faq__a"><p>Sim — o 21D foi desenhado para o ponto zero. A semana 1 assume que você não alcança os pés, não senta no chão sem apoio e não sabe o nome de nenhum movimento. Cada exercício tem versão facilitada, e o Daniel mostra as duas.</p></div>
+      </div>
+
+      <div class="faq__i">
+        <button class="faq__q" type="button" aria-expanded="false">Preciso de tapete, faixa ou algum equipamento?<span class="faq__sign"></span></button>
+        <div class="faq__a"><p>Nada obrigatório. Um espaço do tamanho de uma toalha estendida basta. Se tiver um tapete ou uma toalha dobrada para apoiar o joelho, fica mais confortável — mas ninguém precisa comprar nada para começar.</p></div>
+      </div>
+
+      <div class="faq__i">
+        <button class="faq__q" type="button" aria-expanded="false">Tenho hérnia de disco / problema no joelho. Posso fazer?<span class="faq__sign"></span></button>
+        <div class="faq__a"><p>O 21D é um programa de bem-estar e mobilidade, não um tratamento. Se você tem diagnóstico, lesão recente, cirurgia ou dor aguda, converse com seu médico ou fisioterapeuta antes de começar e leve o programa para ele avaliar.</p></div>
+      </div>
+
+      <div class="faq__i">
+        <button class="faq__q" type="button" aria-expanded="false">E se eu perder um dia?<span class="faq__sign"></span></button>
+        <div class="faq__a"><p>Você retoma de onde parou. O acesso é seu e as sessões ficam liberadas — a numeração é uma sequência sugerida, não uma trava. O que faz diferença é a repetição ao longo das semanas, não a perfeição do calendário.</p></div>
+      </div>
+
+      <div class="faq__i">
+        <button class="faq__q" type="button" aria-expanded="false">Em quanto tempo eu sinto alguma coisa?<span class="faq__sign"></span></button>
+        <div class="faq__a"><p>A sensação de alívio costuma aparecer logo nas primeiras sessões, porque parte da rigidez é proteção muscular e cede rápido. O ganho de amplitude que aparece no reteste é o da semana 2 em diante. Isso varia de pessoa para pessoa.</p></div>
+      </div>
+
+      <div class="faq__i">
+        <button class="faq__q" type="button" aria-expanded="false">Como recebo o acesso?<span class="faq__sign"></span></button>
+        <div class="faq__a"><p>Assim que o pagamento é aprovado, a Hotmart envia seu login por e-mail. Você assiste pelo navegador ou pelo aplicativo da Hotmart, no celular, tablet, computador ou TV. Se o e-mail não chegar, o suporte resolve em <span class="edit">canal de suporte</span>.</p></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========================= FINAL CTA ========================= -->
+<section class="final">
+  <div class="wrap final__in">
+    <p class="eyebrow rise" style="justify-content:center">Dia 1</p>
+    <h2 class="h2 rise" data-d="1">Seu corpo ainda tem a amplitude. Vá buscar.</h2>
+    <p class="lede rise" data-d="1">Quinze minutos hoje. Depois amanhã. Em três semanas você repete o mesmo teste do dia 1 e vê quanto chão a mais suas mãos alcançam.</p>
+    <div class="rise" data-d="2">
+      <a class="btn btn--go btn--lg" href="https://pay.hotmart.com/G106599845O?off=5l9x9gnn&amp;hotfeature=51">Entrar no Desafio 21D</a>
+      <span class="btn__note">Acesso imediato · garantia de <span class="edit">nº</span> dias</span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ========================= FOOTER ========================= -->
+<footer class="foot">
+  <div class="wrap foot__in">
+    <p class="foot__c">© 2026 Prof. Daniel Bastos · Desafio Alongamento 21D</p>
+    <nav class="foot__links">
+      <a href="#">Termos de uso</a>
+      <a href="#">Política de privacidade</a>
+      <a href="#">Suporte</a>
+    </nav>
+  </div>
+  <div class="wrap">
+    <p class="foot__legal">Este produto é um programa educacional de alongamento e mobilidade. Não substitui avaliação, diagnóstico ou tratamento médico ou fisioterapêutico. Consulte um profissional de saúde antes de iniciar qualquer atividade física, especialmente em caso de lesão, cirurgia recente, gravidez ou dor persistente. Resultados variam conforme frequência, histórico e condição individual. Este site não é afiliado ao Facebook, Instagram ou Google.</p>
+  </div>
+</footer>
+
+<!-- sticky mobile bar -->
+<div class="dock" id="dock">
+  <a class="btn btn--go btn--block" href="https://pay.hotmart.com/G106599845O?off=5l9x9gnn&amp;hotfeature=51">Entrar no Desafio 21D</a>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- scroll reveal ---- */
+  var risers = document.querySelectorAll('.rise');
+  if (reduce || !('IntersectionObserver' in window)) {
+    risers.forEach(function(el){ el.classList.add('is-in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+    risers.forEach(function(el){ io.observe(el); });
+  }
+
+  /* ---- hero goniometer: sweep to target, readout counts along ---- */
+  var C = 753.98, TARGET = 104, R = 120;
+  var fill = document.getElementById('heroFill');
+  var arm  = document.getElementById('heroArm');
+  var read = document.getElementById('read');
+
+  function setAngle(deg){
+    var len = (deg / 360) * C;
+    fill.setAttribute('stroke-dasharray', len.toFixed(2) + ' ' + C);
+    var rad = deg * Math.PI / 180;
+    arm.setAttribute('x2', (150 - R * Math.cos(rad)).toFixed(2));
+    arm.setAttribute('y2', (150 - R * Math.sin(rad)).toFixed(2));
+    read.textContent = Math.round(deg) + '°';
+  }
+
+  if (reduce) {
+    setAngle(TARGET);
+  } else {
+    setAngle(0);
+    var t0 = null, DUR = 1500;
+    function step(ts){
+      if (t0 === null) t0 = ts;
+      var p = Math.min((ts - t0) / DUR, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      setAngle(TARGET * eased);
+      if (p < 1) requestAnimationFrame(step);
+    }
+    setTimeout(function(){ requestAnimationFrame(step); }, 650);
+  }
+
+  /* ---- nav state + scroll meter ---- */
+  var nav = document.getElementById('nav');
+  var meter = document.getElementById('meter');
+  var dock = document.getElementById('dock');
+  var ticking = false;
+
+  function onScroll(){
+    var y = window.scrollY || window.pageYOffset;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    nav.classList.toggle('is-stuck', y > 12);
+    meter.style.width = (h > 0 ? (y / h) * 100 : 0) + '%';
+    dock.classList.toggle('is-up', y > window.innerHeight * 0.6);
+    ticking = false;
+  }
+  window.addEventListener('scroll', function(){
+    if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
+  }, { passive: true });
+  onScroll();
+
+  /* ---- FAQ accordion ---- */
+  document.querySelectorAll('.faq__q').forEach(function(btn, i){
+    var item = btn.parentElement;
+    var panel = btn.nextElementSibling;
+    panel.id = 'faq-a-' + i;
+    panel.setAttribute('role', 'region');
+    btn.setAttribute('aria-controls', panel.id);
+    btn.addEventListener('click', function(){
+      var open = item.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      panel.style.maxHeight = open ? panel.scrollHeight + 'px' : '0px';
+    });
+  });
+  window.addEventListener('resize', function(){
+    document.querySelectorAll('.faq__i.is-open .faq__a').forEach(function(p){
+      p.style.maxHeight = p.scrollHeight + 'px';
+    });
+  });
+})();
+</script>
+</body>
+</html>
