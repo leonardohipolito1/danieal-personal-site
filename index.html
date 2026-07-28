@@ -452,6 +452,8 @@ a{color:inherit}
 }
 .price__main sup{font-size:.42em;font-weight:700;vertical-align:super;margin-right:4px;letter-spacing:0}
 .price__cash{font-family:var(--mono);font-size:13.5px;color:var(--muted);margin:12px 0 0;letter-spacing:.03em}
+.price__main .price__ast{font-size:.34em;font-weight:400;vertical-align:super;margin:0 0 0 2px}
+.price__ft{font-family:var(--mono);font-size:11px;color:var(--muted-dim);margin:8px 0 0;letter-spacing:.04em;line-height:1.5}
 
 .edit{
   display:inline-block;font-family:var(--mono);font-size:10.5px;
@@ -637,7 +639,7 @@ a{color:inherit}
       <div class="proof load" data-d="5">
         <span class="proof__i"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1v14M1 8h14"/></svg>15 min por dia</span>
         <span class="proof__i"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1.5" y="2.5" width="13" height="12" rx="2"/><path d="M1.5 6h13M5 1v3M11 1v3"/></svg>Acesso imediato</span>
-        <span class="proof__i"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1.5l5.5 2.3v4c0 3.3-2.3 5.6-5.5 6.7C4.8 13.4 2.5 11.1 2.5 7.8v-4L8 1.5z"/></svg>Garantia de <span class="edit">editar</span> dias</span>
+        <span class="proof__i"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1.5l5.5 2.3v4c0 3.3-2.3 5.6-5.5 6.7C4.8 13.4 2.5 11.1 2.5 7.8v-4L8 1.5z"/></svg>Garantia de 7 dias</span>
       </div>
     </div>
 
@@ -838,7 +840,7 @@ a{color:inherit}
         <li><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8.5l4 4 8-9"/></svg>Mais de 10 anos como Professor de Educação Física</li>
         <li><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8.5l4 4 8-9"/></svg>Metodologia própria, testada em atendimento presencial antes de virar programa</li>
         <li><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8.5l4 4 8-9"/></svg>Foco em quem passa o dia sentado, não em quem já treina</li>
-        <li><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8.5l4 4 8-9"/></svg>Centenas de alunos guiados no desafio <span class="edit">confirmar nº</span></li>
+        <li><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8.5l4 4 8-9"/></svg>Centenas de alunos guiados no desafio</li>
       </ul>
       <div class="rise" data-d="3" style="margin-top:34px">
         <a class="btn btn--ghost" href="https://pay.hotmart.com/G106599845O?off=5l9x9gnn&amp;hotfeature=51">Começar com o Prof. Daniel</a>
@@ -904,9 +906,10 @@ a{color:inherit}
       </ul>
 
       <div class="price">
-        <p class="price__from">De <span class="strike">R$ <span class="edit">valor cheio</span></span> por</p>
-        <p class="price__main"><sup>12x</sup>R$ <span class="edit">valor</span></p>
-        <p class="price__cash">ou R$ <span class="edit">à vista</span> no Pix · Cartão, Pix ou boleto</p>
+        <p class="price__from">De <span class="strike">R$ 99,96</span> por</p>
+        <p class="price__main"><sup>9x</sup>R$ 8,80<sup class="price__ast">*</sup></p>
+        <p class="price__cash">ou R$ 67,00 à vista no Pix · Cartão, Pix ou boleto</p>
+        <p class="price__ft">* Parcelamento no cartão de crédito com juros da Hotmart.</p>
       </div>
 
       <a class="btn btn--go btn--lg btn--block" href="https://pay.hotmart.com/G106599845O?off=5l9x9gnn&amp;hotfeature=51">Quero entrar no Desafio 21D</a>
@@ -920,12 +923,12 @@ a{color:inherit}
   <div class="wrap">
     <div class="guar rise">
       <div class="guar__seal">
-        <span class="guar__num"><span class="edit" style="margin:0">nº</span></span>
+        <span class="guar__num">7</span>
         <span class="guar__unit">dias</span>
       </div>
       <div>
         <h3 class="guar__t">Teste sem risco</h3>
-        <p class="guar__d">Entre, faça as primeiras sessões e veja como seu corpo responde. Se não for para você, peça o reembolso dentro do prazo pela própria Hotmart e receba 100% de volta — sem formulário, sem justificativa, sem conversa de retenção. <span class="edit">definir prazo</span></p>
+        <p class="guar__d">Entre, faça as primeiras sessões e veja como seu corpo responde. Se não for para você, peça o reembolso em até 7 dias pela própria Hotmart e receba 100% de volta — sem formulário, sem justificativa, sem conversa de retenção.</p>
       </div>
     </div>
   </div>
@@ -982,7 +985,7 @@ a{color:inherit}
     <p class="lede rise" data-d="1">Quinze minutos hoje. Depois amanhã. Em três semanas você repete o mesmo teste do dia 1 e vê quanto chão a mais suas mãos alcançam.</p>
     <div class="rise" data-d="2">
       <a class="btn btn--go btn--lg" href="https://pay.hotmart.com/G106599845O?off=5l9x9gnn&amp;hotfeature=51">Entrar no Desafio 21D</a>
-      <span class="btn__note">Acesso imediato · garantia de <span class="edit">nº</span> dias</span>
+      <span class="btn__note">Acesso imediato · garantia de 7 dias</span>
     </div>
   </div>
 </section>
